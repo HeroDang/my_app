@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/provider/cart_order.dart';
+import 'package:my_app/provider/order.dart';
 import 'package:my_app/provider/product.dart';
 import 'package:my_app/screens/cart_order_screen.dart';
+import 'package:my_app/screens/order_screen.dart';
 import 'package:my_app/screens/product_detail_screen.dart';
 import 'package:my_app/screens/product_list_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,27 +18,31 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return CardOrderContainer(
-      child: ProductContainer(
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
-          home: const ProductListScreen(),
-          routes: {
-            // static router
-            // '/': (_) => HomePage(), // You can also use MaterialApp's `home` property instead of '/'
-            // AuthScreenPage.routeName: (context) =>
-            // const AuthScreenPage(), // No way to pass an argument to FooPage.
-            // ShopProductListScreen.routeName: (context) =>
-            // const ShopProductListScreen(),
-            ProductListScreen.routeName: (context) => const ProductListScreen(),
-            ProductDetailSreen.routeName: (context) =>
-                const ProductDetailSreen(),
-            CardOrderScreen.routeName: (context) => const CardOrderScreen(),
-          },
-          onGenerateRoute: generateRoute, // generate router
-          onUnknownRoute: (settings) => MaterialPageRoute(
-            builder: (context) => const Text('Unknown route'),
+    return ChangeNotifierProvider<OrderProvider>(
+      create: (_) => OrderProvider(),
+      child: CartOrderContainer(
+        child: ProductContainer(
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            home: const ProductListScreen(),
+            routes: {
+              // static router
+              // '/': (_) => HomePage(), // You can also use MaterialApp's `home` property instead of '/'
+              // AuthScreenPage.routeName: (context) =>
+              // const AuthScreenPage(), // No way to pass an argument to FooPage.
+              // ShopProductListScreen.routeName: (context) =>
+              // const ShopProductListScreen(),
+              ProductListScreen.routeName: (context) => const ProductListScreen(),
+              ProductDetailSreen.routeName: (context) =>
+                  const ProductDetailSreen(),
+              CardOrderScreen.routeName: (context) => const CardOrderScreen(),
+              OrderScreen.routeName: (context) => const OrderScreen(),
+            },
+            onGenerateRoute: generateRoute, // generate router
+            onUnknownRoute: (settings) => MaterialPageRoute(
+              builder: (context) => const Text('Unknown route'),
+            ),
           ),
         ),
       ),

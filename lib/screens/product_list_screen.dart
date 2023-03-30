@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/drawer_menu.dart';
 import 'package:my_app/provider/cart_order.dart';
 import 'package:my_app/provider/product.dart';
 import 'package:my_app/screens/cart_order_screen.dart';
@@ -21,11 +22,12 @@ class ProductListScreenState extends State<ProductListScreen> {
     final productContainer = ProductContainer.of(context);
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      drawer : const DrawerMenu(),
       appBar: AppBar(
         title: const Text('Product List'),
         actions: [
           CardWidget(
-              count: CardOrderContainer
+              count: CartOrderContainer
                   .of(context)
                   .cardItems
                   .length,
@@ -74,12 +76,12 @@ class ProductListScreenState extends State<ProductListScreen> {
                     textAlign: TextAlign.center,
                   ),
                   trailing: CardWidget(
-                    count: CardOrderContainer.of(context)
+                    count: CartOrderContainer.of(context)
                       .cardItems
                       .firstWhere((item) => item.id == product.id, orElse: () => product.copyWith(quantity: 0),)
                       .quantity,
                     onTap: (){
-                      CardOrderContainer.of(context).addToCard(product);
+                      CartOrderContainer.of(context).addToCard(product);
                     },
                   ),
                 ),

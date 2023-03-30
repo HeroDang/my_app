@@ -5,7 +5,7 @@ import '../model/product_item.dart';
 final List<ProductItem> orderProductsList = [];
 
 class _CardOrderInheritedWidget extends InheritedWidget {
-  final _CardOrderContainerState data;
+  final _CartOrderContainerState data;
 
   const _CardOrderInheritedWidget(
       {Key? key, required this.data, required Widget child})
@@ -17,24 +17,24 @@ class _CardOrderInheritedWidget extends InheritedWidget {
   }
 }
 
-class CardOrderContainer extends StatefulWidget {
-  const CardOrderContainer({Key? key, required this.child}) : super(key: key);
+class CartOrderContainer extends StatefulWidget {
+  const CartOrderContainer({Key? key, required this.child}) : super(key: key);
 
   final Widget child;
 
-  static _CardOrderContainerState of(BuildContext context) {
+  static _CartOrderContainerState of(BuildContext context) {
     return (context
             .dependOnInheritedWidgetOfExactType<_CardOrderInheritedWidget>())!
         .data;
   }
 
   @override
-  _CardOrderContainerState createState() {
-    return _CardOrderContainerState();
+  _CartOrderContainerState createState() {
+    return _CartOrderContainerState();
   }
 }
 
-class _CardOrderContainerState extends State<CardOrderContainer> {
+class _CartOrderContainerState extends State<CartOrderContainer> {
   final List<ProductItem> _items = orderProductsList;
   final List<ProductItem> _selectedItems = [];
 
@@ -73,6 +73,14 @@ class _CardOrderContainerState extends State<CardOrderContainer> {
       } else {
         _items.removeAt(productIndex);
       }
+    });
+  }
+
+  void clearCart(){
+    setState(() {
+      isDeleteMode = false;
+      _items.clear();
+      _selectedItems.clear();
     });
   }
 

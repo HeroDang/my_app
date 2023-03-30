@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/model/product_item.dart';
 import 'package:my_app/provider/cart_order.dart';
+import 'package:my_app/provider/order.dart';
+import 'package:my_app/screens/order_screen.dart';
+import 'package:provider/provider.dart';
 
 class CardOrderScreen extends StatelessWidget {
   static const routeName = '/card-order-products';
@@ -9,10 +12,9 @@ class CardOrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cartItems = CardOrderContainer.of(context).cardItems;
-    final totalPrice = CardOrderContainer.of(context).totalPrice;
-
-    final cartOder = CardOrderContainer.of(context);
+    final cartOrder = CartOrderContainer.of(context);
+    final cartItems = cartOrder.cardItems;
+    final totalPrice = cartOrder.totalPrice;
 
     return Scaffold(
       appBar: AppBar(
@@ -59,7 +61,11 @@ class CardOrderScreen extends StatelessWidget {
                             width: 5,
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Provider.of<OrderProvider>(context, listen: false).addOrder(cartItems);
+                              cartOrder.clearCart();
+                              Navigator.of(context).popAndPushNamed(OrderScreen.routeName);
+                            },
                             child: const Text(
                               'ORDER NOW',
                               style: TextStyle(
@@ -76,7 +82,7 @@ class CardOrderScreen extends StatelessWidget {
                                   side: const BorderSide(
                                       width: 2, color: Colors.red)),
                               child: Text(
-                                cartOder.isDeleteMode
+                                cartOrder.isDeleteMode
                                     ? 'Delete selected'
                                     : 'Delete',
                                 style: const TextStyle(
@@ -85,16 +91,16 @@ class CardOrderScreen extends StatelessWidget {
                                 ),
                               ),
                               onPressed: () {
-                                if (cartOder.isDeleteMode) {
-                                  if (cartOder.selectedItems.isEmpty) {
-                                    cartOder.tongleDeleteMode();
+                                if (cartOrder.isDeleteMode) {
+                                  if (cartOrder.selectedItems.isEmpty) {
+                                    cartOrder.tongleDeleteMode();
                                     return;
                                   }
                                   final selectedItems = [
-                                    ...cartOder.selectedItems
+                                    ...cartOrder.selectedItems
                                   ];
-                                  cartOder.deletedSelected();
-                                  cartOder.tongleDeleteMode();
+                                  cartOrder.deletedSelected();
+                                  cartOrder.tongleDeleteMode();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content:
@@ -102,14 +108,14 @@ class CardOrderScreen extends StatelessWidget {
                                       action: SnackBarAction(
                                         label: 'Undo',
                                         onPressed: () {
-                                          cartOder.undoDelete(selectedItems);
-                                          cartOder.tongleDeleteMode();
+                                          cartOrder.undoDelete(selectedItems);
+                                          cartOrder.tongleDeleteMode();
                                         },
                                       ),
                                     ),
                                   );
                                 } else {
-                                  cartOder.tongleDeleteMode();
+                                  cartOrder.tongleDeleteMode();
                                 }
                               })
                         ],
@@ -127,13 +133,13 @@ class CardOrderScreen extends StatelessWidget {
                   return Card(
                     child: Row(
                       children: [
-                        if (cartOder.isDeleteMode)
+                        if (cartOrder.isDeleteMode)
                           Expanded(
                             flex: 1,
                             child: Checkbox(
-                                value: cartOder.isSelected(cartItems[index]),
+                                value: cartOrder.isSelected(cartItems[index]),
                                 onChanged: (value) {
-                                  cartOder.tongleSelected(cartItems[index]);
+                                  cartOrder.tongleSelected(cartItems[index]);
                                 }),
                           ),
                         Container(
@@ -179,7 +185,7 @@ class CardOrderScreen extends StatelessWidget {
                               children: [
                                 IconButton(
                                   onPressed: () {
-                                    CardOrderContainer.of(context)
+                                    CartOrderContainer.of(context)
                                         .degreeProd(cartItems[index]);
                                   },
                                   icon: const Icon(
@@ -202,7 +208,7 @@ class CardOrderScreen extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    CardOrderContainer.of(context)
+                                    CartOrderContainer.of(context)
                                         .addToCard(cartItems[index]);
                                   },
                                   icon: const Icon(
